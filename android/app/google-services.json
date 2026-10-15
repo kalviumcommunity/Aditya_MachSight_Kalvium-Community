@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1044630428156",
+    "project_id": "machsight",
+    "storage_bucket": "machsight.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1044630428156:android:4386d0106a99573bb13a79",
+        "android_client_info": {
+          "package_name": "com.machsight.machsight"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDEnK6f_RDy06fzjqboIdQeLgVroq6mMzw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
