@@ -1,30 +1,52 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:machsight/main.dart';
+import 'package:machsight/app/app.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('application starts on the Dashboard screen', (tester) async {
+    await tester.pumpWidget(const MachSightApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.text('Dashboard'), findsNWidgets(3));
+    expect(find.byKey(const Key('app-bar-title')), findsOneWidget);
+    expect(find.textContaining('monitoring overview'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+  testWidgets(
+    'primary navigation contains exactly four destinations in order',
+    (tester) async {
+      await tester.pumpWidget(const MachSightApp());
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      final navigationBar = tester.widget<NavigationBar>(
+        find.byType(NavigationBar),
+      );
+      final destinations = navigationBar.destinations
+          .whereType<NavigationDestination>()
+          .map((destination) => destination.label)
+          .toList();
+
+      expect(destinations, ['Dashboard', 'Machines', 'Alerts', 'Tasks']);
+      expect(destinations, hasLength(4));
+    },
+  );
+
+  testWidgets('switching tabs displays each screen title', (tester) async {
+    await tester.pumpWidget(const MachSightApp());
+
+    for (final destination in [
+      ('Machines', 'Machine records'),
+      ('Alerts', 'Fault alerts'),
+      ('Tasks', 'Maintenance tasks'),
+      ('Dashboard', 'monitoring overview'),
+    ]) {
+      await tester.tap(find.text(destination.$1).last);
+      await tester.pumpAndSettle();
+
+      final appBarTitle = tester.widget<Text>(
+        find.byKey(const Key('app-bar-title')),
+      );
+      expect(appBarTitle.data, destination.$1);
+      expect(find.textContaining(destination.$2), findsOneWidget);
+    }
   });
 }
